@@ -1,0 +1,147 @@
+/* Uva 101 */
+//Completed By ray
+
+#include <iostream>
+#include <cstdio>
+#include <vector>
+#include <cstring>
+#include <stack>
+using namespace std;
+
+
+int main()
+{
+	int num;
+	
+	while (cin >> num) {
+
+		stack<int> st[26];
+		vector<int> pos;
+
+		for (int i = 0; i < num; i++)
+		{
+			st[i].push(i);
+			pos.push_back(i);
+		}
+		
+		while (true) {
+
+			char com[5];
+			char com1[5];
+			int s, t;
+			cin >> com;
+			if (strcmp(com, "quit") == 0)
+				break;
+			cin >> s;
+			cin >> com1; cin >> t;
+
+
+			if (s == t)
+				continue;
+			if (pos[s] == pos[t])
+				continue;
+			if (strcmp(com, "move") == 0)
+			{
+				if (strcmp(com1, "onto") == 0)
+				{
+
+					while (st[pos[s]].top() != s) {
+						int ori = st[pos[s]].top();
+						pos[ori] = ori;
+						st[pos[ori]].push(ori);
+						st[pos[s]].pop();
+
+					}
+					st[pos[s]].pop();
+					while (st[pos[t]].top() != t) {
+						int ori = st[pos[t]].top();
+						pos[ori] = ori;
+						st[pos[t]].pop();
+						st[pos[ori]].push(ori);
+					}
+					st[pos[t]].push(s);
+					pos[s] = pos[t];
+
+				}
+				if (strcmp(com1, "over") == 0)
+				{
+					while (st[pos[s]].top() != s) {  
+						int ori = st[pos[s]].top();
+						pos[ori] = ori;
+						st[pos[s]].pop();
+						st[pos[ori]].push(ori);
+					}
+					st[pos[s]].pop();
+					st[pos[t]].push(s);
+					pos[s] = pos[t];
+				}
+			}
+			if (strcmp(com, "pile") == 0)
+			{
+				if (strcmp(com1, "onto") == 0) {
+					stack<int> temp;
+					while (st[pos[s]].top() != s) {
+						int ori = st[pos[s]].top();
+						pos[ori] = pos[t];
+						st[pos[s]].pop();
+						temp.push(ori);
+					}
+
+					while (st[pos[t]].top() != t) {
+						int ori = st[pos[t]].top();
+						pos[ori] = ori;
+						st[pos[t]].pop();
+						st[pos[ori]].push(ori);
+					}
+					st[pos[s]].pop();
+					st[pos[t]].push(s);
+					pos[s] = pos[t];
+					while (!temp.empty())
+					{
+						st[pos[t]].push(temp.top());
+						temp.pop();
+					}
+				}
+				if (strcmp(com1, "over") == 0) {
+					stack<int> temp;
+					while (st[pos[s]].top() != s) {
+						int ori = st[pos[s]].top();
+						pos[ori] = pos[t];
+						st[pos[s]].pop();
+						temp.push(ori);
+					}
+					st[pos[s]].pop();
+					st[pos[t]].push(s);
+					pos[s] = pos[t];
+					while (!temp.empty())
+					{
+						st[pos[t]].push(temp.top());
+						temp.pop();
+					}
+
+				}
+			}
+
+		}
+
+		stack<int> re;
+		for (int i = 0; i < num; i++)
+		{
+			cout << i << ":";
+			while (!st[i].empty())
+			{
+				re.push(st[i].top());
+				st[i].pop();
+			}
+			while (!re.empty())
+			{
+				int c = re.top();
+				re.pop();
+				cout << " " << c;
+
+			}
+			cout << endl;
+		}
+	}
+	
+}
